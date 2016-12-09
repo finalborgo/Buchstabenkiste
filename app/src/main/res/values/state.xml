@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="states">
+        <item>kaufen</item>
+        <item>lesen</item>
+        <item>verliehen</item>
+        <item>im Regal</item>
+    </string-array>
+</resources>
