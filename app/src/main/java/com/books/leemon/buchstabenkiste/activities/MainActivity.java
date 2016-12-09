@@ -1,26 +1,20 @@
 package com.books.leemon.buchstabenkiste.activities;
 
 import android.app.AlertDialog;
-import android.app.ListActivity;
-import android.app.LoaderManager;
 import android.content.ContentValues;
-import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -47,7 +41,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends AppCompatActivity  {
 
     //Fields for the bar code scanner
     private static final int ZBAR_SCANNER_REQUEST = 0;
@@ -64,22 +58,6 @@ public class MainActivity extends ListActivity implements LoaderManager.LoaderCa
 
     private Uri bookUri;
 
-    @Bind(R.id.cmdAddBookIsbn)
-    FloatingActionButton cmdAddBookIsbn;
-
-    @Bind(R.id.cmdAddBookText)
-    FloatingActionButton cmdAddBookText;
-
-
-
-    @Bind(R.id.cmdExportData)
-    FloatingActionButton cmdExportData;
-
-
-    @Bind(android.R.id.list)
-    ListView listBooks;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,57 +65,6 @@ public class MainActivity extends ListActivity implements LoaderManager.LoaderCa
         //bind Views
         ButterKnife.bind(this);
 
-        //ListView
-        this.getListView().setDividerHeight(2);
-        fillData();
-
-        listBooks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                showBookDetails(id);
-            }
-        });
-
-        listBooks.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(MainActivity.this, "Item löschen", Toast.LENGTH_LONG).show();
-                boolean deleted = false;
-                Uri uri = Uri.parse(BooksProvider.CONTENT_URI + "/" + id);
-                int rowsDeleted = getContentResolver().delete(uri, null, null);
-                if (rowsDeleted == 1) {
-                    deleted = true;
-                }
-                return deleted;
-            }
-        });
-
-        //OnClick for FloatingActionButton to add a new book by scanning a barcode
-        cmdAddBookIsbn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startBarcodeScan();
-            }
-        });
-
-        cmdAddBookText.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-//                Toast.makeText(MainActivity.this, "Daten exportieren", Toast.LENGTH_SHORT).show();
-//                exportData();
-                //
-                //TEST add Book with Author and Title
-                showSetAuthorTitleDialog();
-            }
-        });
-
-        cmdExportData.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                exportData();
-            }
-        });
     }
 
     // create the menu based on the XML defintion
@@ -167,21 +94,6 @@ public class MainActivity extends ListActivity implements LoaderManager.LoaderCa
         return super.onOptionsItemSelected(item);
     }
 
-    private void fillData() {
-        // Fields from the database (projection)
-        // Must include the _id column for the adapter to work
-        String[] from = new String[]{BookTable.COLUMN_COVER, BookTable.COLUMN_TITLE, BookTable.COLUMN_AUTHOR};
-        // Fields on the UI to which we map
-        int[] to = new int[]{R.id.listBookCover, R.id.listBookTitle, R.id.listBookAuthor};
-
-        getLoaderManager().initLoader(0, null, this);
-        bookAdapter = new BookListAdapter(this, R.layout.list_view_item_book, null, from,
-                to, 0);
-
-        setListAdapter(bookAdapter);
-
-
-    }
 
     public boolean isCameraAvailable() {
         PackageManager pm = getPackageManager();
@@ -254,7 +166,7 @@ public class MainActivity extends ListActivity implements LoaderManager.LoaderCa
     }
 
 
-    @Override
+    /*@Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String[] projection = {BookTable.COLUMN_ROWID, BookTable.COLUMN_COVER, BookTable.COLUMN_TITLE, BookTable.COLUMN_AUTHOR};
         CursorLoader cursorLoader = new CursorLoader(this,
@@ -270,7 +182,7 @@ public class MainActivity extends ListActivity implements LoaderManager.LoaderCa
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         bookAdapter.swapCursor(null);
-    }
+    }*/
 
     private void exportData() {
         SQLiteDatabase sqldb = new DatabaseHelper(this).getReadableDatabase();
