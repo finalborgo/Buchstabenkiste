@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity  {
 
             rowcount = c.getCount();
             colcount = c.getColumnCount();
-
+//HelloWorld
             Toast.makeText(MainActivity.this, "Bücher gespeichert unter " + saveFile.getAbsolutePath()+ " ITEMS: "+rowcount, Toast.LENGTH_LONG).show();
             Log.d("PFAD", saveFile.getAbsolutePath()+" --- "+rowcount);
 
